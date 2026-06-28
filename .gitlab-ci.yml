@@ -1,0 +1,20 @@
+image: openjdk:17-jdk-slim
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+stages:
+  - build
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - ./gradlew :app:wasmJsBrowserDistribution
+    - mkdir -p public
+    - cp -r app/build/dist/wasmJs/productionExecutable/* public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
