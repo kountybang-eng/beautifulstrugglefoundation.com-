@@ -360,9 +360,3 @@ fun PartnerTag(name: String) {
         modifier = Modifier.border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(4.dp)).padding(8.dp)
     )
 }
-git init
-git add .
-git commit -m "Initial commit with GitHub/GitLab support"
-git branch -M main
-git remote add origin https://github.com/kountybang-eng/beautifulstrugglefoundation.com-.git
-git push -u origin main
