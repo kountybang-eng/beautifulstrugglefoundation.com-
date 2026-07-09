@@ -1,5 +1,0 @@
-name = "beautifulstrugglefoundation"
-pages_build_output_dir = "app/build/dist/wasmJs/productionExecutable"
-
-[vars]
-KOTLIN_VERSION = "2.1.0"

@@ -4,24 +4,351 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beautiful Struggle Foundation</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <script type="application/javascript" src="composeApp.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        html, body {
-            width: 100%;
-            height: 100%;
+        :root {
+            --flyer-gold: #FFD700;
+            --flyer-neon-green: #39FF14;
+            --bg-color: #050505;
+            --card-bg: #111111;
+            --comment-bg: #181818;
+            --border-radius: 16px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            background-color: #1E1B16;
-        }
-        #compose-target {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height:
+        /* --- Navigation --- */
+        nav {
             width: 100%;
-            height: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: sticky;
+            top: 0;
+            background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 50;
         }
+
+        .nav-logo { font-family: 'Dancing Script', cursive; font-size: 24px; color: var(--flyer-gold); font-weight: 900; }
+        .auth-btn { background: transparent; border: 1px solid var(--flyer-gold); color: var(--flyer-gold); padding: 8px 16px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .container {
+            max-width: 600px;
+            width: 95%;
+            padding-bottom: 100px;
+            position: relative;
+        }
+
+        .view-section { display: none; width: 100%; animation: fadeIn 0.3s ease-out; }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Typography --- */
+        h1, h2, h3 { margin: 0; font-weight: 900; }
+        .gold-text { color: var(--flyer-gold); }
+        .green-text { color: var(--flyer-neon-green); }
+
+        /* --- Home View --- */
+        header { text-align: center; padding: 40px 0; }
+        header h2 { font-size: 20px; letter-spacing: 2px; }
+        header h1 { font-size: 58px; line-height: 1; }
+        .presents { font-family: 'Dancing Script', cursive; font-size: 28px; margin: 10px 0; }
+
+        .impact-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .impact-score { font-size: 72px; font-weight: 900; text-shadow: 0 0 20px var(--flyer-gold); }
+
+        .flyer-box {
+            background: rgba(20, 20, 20, 0.8);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .flyer-box.green { --border-color: var(--flyer-neon-green); }
+        .flyer-box.gold { --border-color: var(--flyer-gold); }
+        .flyer-title { font-weight: 900; font-size: 18px; color: var(--border-color); margin-bottom: 10px; }
+        .bullet { display: flex; margin: 6px 0; font-size: 14px; }
+        .bullet::before { content: "•"; color: var(--flyer-neon-green); font-weight: bold; margin-right: 8px; }
+
+        /* --- Hub View (Catalog) --- */
+        .vehicle-grid { display: grid; grid-template-columns: 1fr; gap: 20px; padding-top: 20px; }
+        .vehicle-card {
+            background: #151515;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+        .vehicle-img { width: 100%; height: 200px; background: #222; object-fit: cover; }
+        .vehicle-info { padding: 16px; }
+        .price-tag { font-size: 24px; font-weight: 900; color: var(--flyer-neon-green); }
+        .val-text { font-size: 12px; color: #888; text-decoration: line-through; }
+
+        /* --- Voices View (Sparks) --- */
+        .comment-card { background: var(--comment-bg); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--flyer-gold); }
+        .comment-user { color: var(--flyer-gold); font-weight: 700; font-size: 14px; }
+        .comment-content { display: block; margin-top: 4px; font-style: italic; color: #ccc; }
+
+        /* --- UI Elements --- */
+        .btn {
+            width: 100%; height: 60px; border-radius: 12px; font-weight: 900; font-size: 18px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; border: none;
+            transition: transform 0.2s, background 0.2s; margin-top: 10px;
+        }
+        .btn-gold { background: var(--flyer-gold); color: black; }
+        .btn-outline { background: transparent; border: 2px solid var(--flyer-neon-green); color: var(--flyer-neon-green); }
+        .btn:active { transform: scale(0.98); }
+
+        /* --- Sticky Tabs --- */
+        .tabs {
+            position: fixed; bottom: 20px; width: 90%; max-width: 500px;
+            background: rgba(20, 20, 20, 0.95); border: 1px solid #333;
+            border-radius: 30px; display: flex; padding: 5px; box-sizing: border-box;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 100;
+        }
+        .tab-item {
+            flex: 1; padding: 12px; text-align: center; font-weight: 900; font-size: 12px;
+            border-radius: 25px; cursor: pointer; color: #888; transition: 0.2s;
+        }
+        .tab-item.active { background: var(--flyer-gold); color: black; }
+
+        /* --- Modals --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .modal-content { background: #111; border: 1px solid var(--flyer-gold); border-radius: 20px; padding: 24px; max-width: 500px; margin: 40px auto; }
+        input, textarea { width: 100%; padding: 14px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; border-radius: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
-    <div id="compose-target"></div>
+
+    <nav>
+        <div class="nav-logo">BSF</div>
+        <button id="auth-trigger" class="auth-btn" onclick="openModal('auth-modal')">SIGN IN</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- SECTION: HOME -->
+        <section id="home-view" class="view-section active">
+            <header>
+                <h2 class="gold-text">THE BEAUTIFUL</h2>
+                <h1 class="gold-text">STRUGGLE</h1>
+                <h2 class="gold-text">FOUNDATION</h2>
+                <div class="presents">Presents</div>
+                <h1 style="font-size: 40px;">GET READY!</h1>
+                <div class="green-text" style="font-weight: 900;">WE ARE CHANGING THE GAME</div>
+            </header>
+
+            <div class="impact-card">
+                <h3 class="gold-text" style="font-size: 14px; letter-spacing: 2px;">COMMUNITY IMPACT SCORE</h3>
+                <div id="impact-score" class="impact-score">1000</div>
+                <div class="green-text" style="font-weight: 900; margin-top: 10px;">10 FAMILIES • 10 CARS</div>
+            </div>
+
+            <div class="flyer-box green">
+                <div class="flyer-title">FOUNDATION HUB</div>
+                <div class="bullet">Dedicated to low-income families.</div>
+                <div class="bullet">Reliable Vehicles at dramatically reduced prices.</div>
+                <div class="bullet">Real Student Partnerships: BTC & Skagit Valley.</div>
+                <button class="btn btn-gold" style="height: 45px; margin-top: 15px; font-size: 14px;" onclick="switchView('hub')">VIEW INVENTORY</button>
+            </div>
+
+            <div class="flyer-box gold">
+                <div class="flyer-title">THE SCOUTERS APP</div>
+                <p style="font-size: 12px; margin-bottom: 10px; font-weight: 700;">FIND VEHICLES. STACK POINTS. CLEAN STREETS.</p>
+                <div class="bullet">Scout abandoned cars, help neighborhoods.</div>
+                <div class="bullet">Win Merchandise & Choose Charities.</div>
+            </div>
+        </section>
+
+        <!-- SECTION: HUB (VEHICLES) -->
+        <section id="hub-view" class="view-section">
+            <h2 class="gold-text" style="margin-top: 20px;">VEHICLE HUB</h2>
+            <p style="color: #888; font-size: 14px;">Reliable transportation for those who need it most.</p>
+
+            <div id="vehicle-list" class="vehicle-grid">
+                <!-- Loading state -->
+                <p style="text-align: center; color: #555;">Fetching available vehicles...</p>
+            </div>
+
+            <button class="btn btn-gold" onclick="openModal('donate-modal')" style="margin-top: 40px;">DONATE A VEHICLE</button>
+        </section>
+
+        <!-- SECTION: VOICES (SPARKS) -->
+        <section id="voices-view" class="view-section">
+            <h2 class="gold-text" style="margin-top: 20px;">COMMUNITY VOICES</h2>
+            <p style="color: #888; font-size: 14px; margin-bottom: 20px;">A spark of hope can light a fire of change.</p>
+
+            <div id="sparks-list">
+                <!-- Sparks load here -->
+            </div>
+
+            <button class="btn btn-outline" onclick="openModal('spark-modal')" style="margin-top: 30px;">POST A SPARK</button>
+        </section>
+
+    </div>
+
+    <!-- STICKY TAB NAVIGATION -->
+    <div class="tabs">
+        <div id="tab-home" class="tab-item active" onclick="switchView('home')">HOME</div>
+        <div id="tab-hub" class="tab-item" onclick="switchView('hub')">THE HUB</div>
+        <div id="tab-voices" class="tab-item" onclick="switchView('voices')">VOICES</div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('auth-modal')">✕ CLOSE</span>
+            <h2 class="gold-text">Sign In</h2>
+            <p style="font-size: 13px; color: #888;">Access your account to stack points and track impact.</p>
+            <input type="email" id="auth-email" placeholder="Email Address">
+            <input type="password" id="auth-pass" placeholder="Password">
+            <button class="btn btn-gold" onclick="handleAuth()">CONTINUE</button>
+            <p style="text-align: center; font-size: 12px; margin-top: 15px;">New here? <span class="green-text" style="cursor:pointer">Create Account</span></p>
+        </div>
+    </div>
+
+    <div id="donate-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('donate-modal')">✕ CLOSE</span>
+            <h2 class="gold-text">Donate Vehicle</h2>
+            <input type="text" id="v-make" placeholder="Year, Make, Model">
+            <textarea id="v-desc" rows="4" placeholder="Condition, mileage, and notes..."></textarea>
+            <button class="btn btn-gold" onclick="submitDonation()">SUBMIT REQUEST</button>
+        </div>
+    </div>
+
+    <div id="spark-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('spark-modal')">✕ CLOSE</span>
+            <h2 class="green-text">Share a Spark</h2>
+            <input type="text" id="s-name" placeholder="Your Name">
+            <textarea id="s-content" rows="4" placeholder="Share a word of encouragement..."></textarea>
+            <button class="btn btn-outline" id="submit-spark-btn" onclick="submitSpark()">POST TO BOARD</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. CONFIG ---
+        const supabaseUrl = 'https://lvddcidqxqofdputxrex.supabase.co';
+        const supabaseKey = 'lvddcidqxqofdputxrexsb_publishable_-F-RS0EEc-yR30sB0dRrCg_Ls8jA9AN';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. NAVIGATION ---
+        function switchView(viewName) {
+            // Update Tab UI
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + viewName).classList.add('active');
+
+            // Update Section Visibility
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(viewName + '-view').classList.add('active');
+
+            window.scrollTo(0,0);
+
+            // Load specific data
+            if(viewName === 'hub') loadVehicles();
+            if(viewName === 'voices') loadSparks();
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // --- 3. LOGIC: SPARKS ---
+        async function loadSparks() {
+            const list = document.getElementById('sparks-list');
+            list.innerHTML = '<p style="text-align: center; color: #555;">Loading...</p>';
+
+            const { data, error } = await _supabase.from('daily_sparks').select('*').order('created_at', { ascending: false });
+
+            if (data && data.length > 0) {
+                list.innerHTML = '';
+                data.forEach(s => {
+                    const card = document.createElement('div');
+                    card.className = 'comment-card';
+                    card.innerHTML = `<span class="comment-user">${s.author_name}</span><span class="comment-content">"${s.content}"</span>`;
+                    list.appendChild(card);
+                });
+            } else {
+                list.innerHTML = '<p style="text-align:center; color:gray;">No voices yet.</p>';
+            }
+        }
+
+        async function submitSpark() {
+            const btn = document.getElementById('submit-spark-btn');
+            const name = document.getElementById('s-name').value;
+            const content = document.getElementById('s-content').value;
+            if (!content) return alert('Please enter a message');
+
+            btn.innerText = 'POSTING...';
+            const { error } = await _supabase.from('daily_sparks').insert([{ author_name: name || 'Anonymous', content: content }]);
+            btn.innerText = 'POST TO BOARD';
+
+            if (error) alert(error.message);
+            else { closeModal('spark-modal'); loadSparks(); }
+        }
+
+        // --- 4. LOGIC: VEHICLES ---
+        async function loadVehicles() {
+            const list = document.getElementById('vehicle-list');
+            const { data, error } = await _supabase.from('vehicles').select('*').eq('status', 'AVAILABLE');
+
+            if (data && data.length > 0) {
+                list.innerHTML = '';
+                data.forEach(v => {
+                    const card = document.createElement('div');
+                    card.className = 'vehicle-card';
+                    card.innerHTML = `
+                        <img class="vehicle-img" src="${v.imageUrl || 'https://via.placeholder.com/400x200?text=Vehicle'}" alt="car">
+                        <div class="vehicle-info">
+                            <div style="font-weight: 900; font-size: 18px;">${v.year} ${v.make} ${v.model}</div>
+                            <div style="color: #888; font-size: 12px; margin-bottom: 10px;">Condition: ${v.condition}</div>
+                            <div class="val-text">Market Value: $${v.blueBookValue}</div>
+                            <div class="price-tag">$${v.foundationPrice}</div>
+                            <div style="font-size: 12px; font-weight: 700;">$${v.monthlyPayment}/mo</div>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            } else {
+                list.innerHTML = '<p style="text-align:center; color:gray;">No vehicles available currently.</p>';
+            }
+        }
+
+        // --- 5. LOGIC: AUTH & MISC ---
+        function handleAuth() {
+            alert('Authentication service is initializing. Please try again in a few moments.');
+            closeModal('auth-modal');
+        }
+
+        function submitDonation() {
+            alert('Donation request sent! We will contact you shortly.');
+            closeModal('donate-modal');
+        }
+
+        // Initial Load
+        loadSparks();
+    </script>
 </body>
 </html>
