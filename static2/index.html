@@ -71,6 +71,19 @@
         .green-text { color: var(--flyer-neon-green); }
         .purple-text { color: var(--purple); }
 
+        /* --- Test Disclaimer Banner --- */
+        .test-disclaimer {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 140, 0, 0.15) 100%);
+            border: 2px solid var(--flyer-gold);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 700;
+            color: var(--flyer-gold);
+            font-size: 14px;
+        }
+
         /* --- Hero Section --- */
         .hero {
             background: linear-gradient(135deg, rgba(139, 75, 168, 0.2) 0%, rgba(57, 255, 20, 0.1) 100%);
@@ -336,6 +349,10 @@
 
         <!-- SECTION: HOME -->
         <section id="home-view" class="view-section active">
+            <div class="test-disclaimer">
+                ⚠️ TEST MODE: The figures, vehicles, and statistics displayed on this page are for development and testing purposes only and do not represent real data. We use this live testing to identify and fix issues ahead of time.
+            </div>
+
             <div class="hero">
                 <div class="hero-content">
                     <h1 class="purple-text">BEAUTIFUL STRUGGLE</h1>
@@ -374,7 +391,7 @@
 
             <div style="background: rgba(139, 75, 168, 0.1); border: 2px solid var(--purple); border-radius: 16px; padding: 40px; margin: 50px 0; text-align: center;">
                 <h3 style="color: var(--purple); margin-bottom: 15px;">PARTNERSHIP WITH BTC</h3>
-                <p style="color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">In partnership with Bellingham Technical College, we combine automotive expertise with community service. Our program provides hands-on training while serving families in need.</p>
+                <p style="color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">In partnership with Bellingham Technical College, we combine automotive expertise with community service to transform lives and neighborhoods.</p>
                 <p style="color: var(--flyer-neon-green); font-weight: 700;">📍 Bellingham, WA | 564-243-0157</p>
             </div>
         </section>
@@ -449,12 +466,12 @@
     <script>
         // Mock Vehicle Data - REALISTIC USED CARS (2014-2017)
         const mockVehicles = [
-            { id: 1, year: 2016, make: 'Honda', model: 'Civic', condition: 'Very Good', blueBookValue: 9200, foundationPrice: 5800, monthlyPayment: 169, mileage: 89000, imageUrl: 'https://images.unsplash.com/photo-1590362891990-f776e74a5a38?w=400&h=300&fit=crop' },
-            { id: 2, year: 2015, make: 'Toyota', model: 'Corolla', condition: 'Excellent', blueBookValue: 9800, foundationPrice: 6200, monthlyPayment: 185, mileage: 76000, imageUrl: 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop' },
-            { id: 3, year: 2014, make: 'Hyundai', model: 'Elantra', condition: 'Good', blueBookValue: 7500, foundationPrice: 4800, monthlyPayment: 145, mileage: 95000, imageUrl: 'https://images.unsplash.com/photo-1605559424843-9e4c3ff86981?w=400&h=300&fit=crop' },
-            { id: 4, year: 2016, make: 'Mazda', model: '3', condition: 'Very Good', blueBookValue: 9500, foundationPrice: 6000, monthlyPayment: 175, mileage: 82000, imageUrl: 'https://images.unsplash.com/photo-1591294776781-67ea570aef37?w=400&h=300&fit=crop' },
-            { id: 5, year: 2015, make: 'Kia', model: 'Forte', condition: 'Good', blueBookValue: 8200, foundationPrice: 5200, monthlyPayment: 155, mileage: 91000, imageUrl: 'https://images.unsplash.com/photo-1609687544150-c4bae10c1bff?w=400&h=300&fit=crop' },
-            { id: 6, year: 2017, make: 'Nissan', model: 'Sentra', condition: 'Excellent', blueBookValue: 10200, foundationPrice: 6500, monthlyPayment: 195, mileage: 68000, imageUrl: 'https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=300&fit=crop' }
+            { id: 1, year: 2016, make: 'Honda', model: 'Civic', condition: 'Very Good', blueBookValue: 9200, foundationPrice: 5800, monthlyPayment: 169, mileage: 89000, imageUrl: 'https://images.unsplash.com/photo-1552519507-da3effff991d?w=400' },
+            { id: 2, year: 2015, make: 'Toyota', model: 'Corolla', condition: 'Excellent', blueBookValue: 9800, foundationPrice: 6200, monthlyPayment: 185, mileage: 76000, imageUrl: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400' },
+            { id: 3, year: 2014, make: 'Hyundai', model: 'Elantra', condition: 'Good', blueBookValue: 7500, foundationPrice: 4800, monthlyPayment: 145, mileage: 95000, imageUrl: 'https://images.unsplash.com/photo-1549399542-7e3f8b83ad38?w=400' },
+            { id: 4, year: 2016, make: 'Mazda', model: '3', condition: 'Very Good', blueBookValue: 9500, foundationPrice: 6000, monthlyPayment: 175, mileage: 82000, imageUrl: 'https://images.unsplash.com/photo-1581384694112-2b91dc822cf7?w=400' },
+            { id: 5, year: 2015, make: 'Kia', model: 'Forte', condition: 'Good', blueBookValue: 8200, foundationPrice: 5200, monthlyPayment: 155, mileage: 91000, imageUrl: 'https://images.unsplash.com/photo-1605559424843-9e4c3ca4b467?w=400' },
+            { id: 6, year: 2017, make: 'Nissan', model: 'Sentra', condition: 'Excellent', blueBookValue: 10200, foundationPrice: 6500, monthlyPayment: 195, mileage: 68000, imageUrl: 'https://images.unsplash.com/photo-1493038794239-056cf96742d5?w=400' },
         ];
 
         // Mock Sparks Data
@@ -498,7 +515,7 @@
                 data.forEach(s => {
                     const card = document.createElement('div');
                     card.className = 'comment-card';
-                    card.innerHTML = `<span class="comment-user">— ${escapeHtml(s.author_name)}</span><span class="comment-content">"${escapeHtml(s.content)}"</span><span class="comment-date">${new Date(s.created_at).toLocaleDateString()}</span>`;
+                    card.innerHTML = `<span class="comment-user">— ${escapeHtml(s.author_name)}</span><span class="comment-content">"${escapeHtml(s.content)}"</span><span class="comment-date">${s.created_at}</span>`;
                     list.appendChild(card);
                 });
             }
@@ -532,7 +549,7 @@
                     card.className = 'vehicle-card';
                     card.innerHTML = `
                         <div style="position: relative;">
-                            <img class="vehicle-img" src="${v.imageUrl}" alt="${escapeHtml(v.year)} ${escapeHtml(v.make)} ${escapeHtml(v.model)}" onerror="this.src='https://via.placeholder.com/400x300?text=${encodeURIComponent(v.year + ' ' + v.make)}' ">
+                            <img class="vehicle-img" src="${v.imageUrl}" alt="${escapeHtml(v.year)} ${escapeHtml(v.make)} ${escapeHtml(v.model)}" onerror="this.src='https://via.placeholder.com/400x240?text=Vehicle+Image'">
                             <span class="vehicle-badge">AVAILABLE</span>
                         </div>
                         <div class="vehicle-info">
